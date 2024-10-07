@@ -1,4 +1,4 @@
-import Login from "./page.client.tsx";
+import Login from "./page.client";
 const LoginPage = () => {
   return <Login />;
 };

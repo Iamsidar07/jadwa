@@ -1,4 +1,4 @@
-import Register from "./page.client.tsx";
+import Register from "./page.client";
 const RegisterPage = () => {
   return <Register />;
 };
