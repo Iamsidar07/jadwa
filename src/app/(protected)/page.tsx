@@ -5,6 +5,13 @@ import { useBlogContext } from "@/contexts/BlogContext";
 
 export default function Home() {
   const { blogs, queryString } = useBlogContext();
+  console.log(
+    "blogs",
+    blogs,
+    blogs?.filter((b) =>
+      b.title.toLowerCase().includes(queryString.trim().toLowerCase())
+    )
+  );
   return (
     <div className="px-4 md:px-8 py-6 bg-[#FAFAFB] flex flex-col gap-6 min-h-screen">
       {/* blogheader */}
@@ -26,9 +33,11 @@ export default function Home() {
       <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {blogs
           ?.filter((b) =>
-            b.title.toLowerCase().includes(queryString.trim().toLowerCase()),
+            b.title.toLowerCase().includes(queryString.trim().toLowerCase())
           )
-          ?.map((blog, i) => <BlogCard key={i} {...blog} />)}
+          ?.map((blog, i) => (
+            <BlogCard key={i} {...blog} />
+          ))}
       </div>
     </div>
   );

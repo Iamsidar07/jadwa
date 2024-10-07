@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 
 const BlogCard = (blog: Blog) => {
+  console.log("blog", blog);
   const router = useRouter();
   const queryClient = useQueryClient();
   const [isPending, startTransition] = useTransition();
