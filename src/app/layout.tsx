@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Provider from "@/components/Provider";
+import { Toaster } from "sonner";
+import BlogContextProvider from "@/contexts/BlogContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -24,12 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <Provider>
+      <html lang="en" className="light">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <BlogContextProvider>{children}</BlogContextProvider>
+          <Toaster richColors position="top-right" />
+        </body>
+      </html>
+    </Provider>
   );
 }
