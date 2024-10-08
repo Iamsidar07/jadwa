@@ -11,6 +11,7 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TailwindEditor from "@/components/editor/TailwindEditor";
+import { Loader } from "lucide-react";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -190,6 +191,7 @@ const EditBlog = ({ blogId }: { blogId: string }) => {
           type="submit"
           className="w-full bg-[#6C5DD3] text-white"
         >
+          {isPending && <Loader className="w-5 h-5 animate-spin mr-1.5" />}
           Publish
         </Button>
       </form>

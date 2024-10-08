@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/svgs";
 import Link from "next/link";
+import { Loader } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(3, "Name should be atleast 3 character"),
@@ -103,6 +104,7 @@ const Register = () => {
           type="submit"
           className="w-full bg-[#6C5DD3] text-white"
         >
+          {isPending && <Loader className="w-5 h-5 animate-spin mr-1.5" />}
           Sign Up
         </Button>
         <p className="text-center text-sm text-[#808191]">

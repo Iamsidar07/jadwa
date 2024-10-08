@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/svgs";
 import Link from "next/link";
+import { Loader } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -83,6 +84,7 @@ const Login = () => {
           type="submit"
           className="w-full bg-[#6C5DD3] text-white"
         >
+          {isPending && <Loader className="w-5 h-5 animate-spin mr-1.5" />}
           Login
         </Button>
         <p className="text-center text-sm text-[#808191]">
