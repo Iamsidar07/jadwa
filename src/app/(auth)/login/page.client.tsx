@@ -53,8 +53,8 @@ const Login = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="flex flex-col gap-4">
           <Logo className="w-32 h-16 mx-auto aspect-square" />
-          <h1 className="text-center text-2xl font-semibold">
-            Welcome, Login to your account
+          <h1 className="text-center text-2xl font-semibold mb-8">
+            Welcome back, Login to your account
           </h1>
           <Label htmlFor="email">Email</Label>
           <Input
