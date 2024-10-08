@@ -1,4 +1,4 @@
-import CreateNewBlog from "./page.client.tsx";
+import CreateNewBlog from "./page.client";
 export default function NewBlog() {
   return (
     <div className="flex flex-col gap-2 p-4">

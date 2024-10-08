@@ -1,4 +1,4 @@
-import EditBlog from "./page.client.tsx";
+import EditBlog from "./page.client";
 export default function EditBlogPage({
   params,
 }: {
