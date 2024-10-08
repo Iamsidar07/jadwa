@@ -48,7 +48,6 @@ const TailwindEditor = ({
 
   const debouncedUpdates = useDebouncedCallback(
     async ({ editor }: { editor: EditorInstance }) => {
-      console.log("debouncedUpdates", editor.getJSON());
       const json = editor.getJSON();
       setContent(json);
       if (setValue) {
@@ -70,7 +69,9 @@ const TailwindEditor = ({
             keydown: (_view, event) => handleCommandNavigation(event),
           },
           attributes: {
-            class: `py-8 px-4 prose prose-lg prose-headings:font-title font-default focus:outline-none max-w-full border rounded-md`,
+            class: `py-8 px-4 prose prose-lg prose-headings:font-title font-default focus:outline-none max-w-full ${
+              isEditable && "border"
+            } rounded-md`,
           },
         }}
       >

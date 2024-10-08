@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
   try {
     const data = getDataFromToken(req);
     const blogs = await Blog.find({ author: data.id });
-    console.log("blogs", blogs);
     return NextResponse.json(blogs, { status: 200 });
   } catch (error) {
     console.log("failed to get blogs", error);

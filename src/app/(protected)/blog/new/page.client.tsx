@@ -2,15 +2,16 @@
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import axios from "axios";
-import { useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TailwindEditor from "@/components/editor/TailwindEditor";
 import { Loader } from "lucide-react";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -36,11 +37,29 @@ const formSchema = z.object({
 });
 
 const CreateNewBlog = () => {
+  const { user } = useCurrentUser();
   const router = useRouter();
   const queryClient = useQueryClient();
   const { register, handleSubmit } = useForm();
-  const [isPending, startTransition] = useTransition();
   const [bodyContent, setBodyContent] = useState<string>("");
+
+  const mutation = useMutation({
+    mutationFn: async ({ formData }: { formData: FormData }) => {
+      const res = await axios.postForm("/api/blog", formData);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      if (data._id) {
+        queryClient.invalidateQueries({ queryKey: ["blogs", user] });
+        toast.success("Blog has been published successfully");
+        router.push("/");
+      }
+    },
+    onError: (e) => {
+      console.log("error", e);
+      toast.error("Oops! Something went wrong");
+    },
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,31 +71,13 @@ const CreateNewBlog = () => {
     },
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values.file[0]);
-    startTransition(async () => {
-      try {
-        const formData = new FormData();
-        formData.append("file", values.file[0]);
-        formData.append("title", values.title);
-        formData.append("description", values.description);
-        formData.append("body", bodyContent);
-        formData.append("publishedAt", values.publishedAt.toString());
-        const promise = axios.postForm("/api/blog", formData);
-        toast.promise(promise, {
-          loading: "Publishing your blog...",
-          success: (data) => {
-            console.log("success", data);
-            return `Published your blog`;
-          },
-          error: "Error",
-        });
-        queryClient.invalidateQueries({ queryKey: ["blogs"] });
-        router.push("/");
-      } catch (error) {
-        console.log("something went wrong", error);
-        toast.error("Oops! Something went wrong");
-      }
-    });
+    const formData = new FormData();
+    formData.append("file", values.file[0]);
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("body", bodyContent);
+    formData.append("publishedAt", values.publishedAt.toString());
+    mutation.mutate({ formData });
   };
 
   return (
@@ -133,12 +134,16 @@ const CreateNewBlog = () => {
 
         <Button
           disabled={
-            isPending || form.formState.isSubmitting || form.formState.isDirty
+            mutation.isLoading ||
+            form.formState.isSubmitting ||
+            form.formState.isDirty
           }
           type="submit"
           className="w-full bg-[#6C5DD3] text-white"
         >
-          {isPending && <Loader className="w-5 h-5 animate-spin mr-1.5" />}
+          {mutation.isLoading && (
+            <Loader className="w-5 h-5 animate-spin mr-1.5" />
+          )}
           Publish
         </Button>
       </form>

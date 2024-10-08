@@ -10,13 +10,13 @@ const Blog = ({ blogId }: { blogId: string }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["blog", blogId],
     queryFn: async () => {
-      console.log("querying blog");
       const res = await axios.get(`/api/blog/${blogId}`);
       return res.data;
     },
   });
+
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full min-h-screen max-w-3xl mx-auto">
       {isLoading && <Loader className="animate-spin w-4 h-4 m-auto" />}
       {!isLoading && data && (
         <div className="flex flex-col gap-4">

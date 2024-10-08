@@ -33,14 +33,7 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     startTransition(async () => {
       try {
-        toast.promise(handleLogin(values), {
-          loading: "Loading...",
-          success: (data) => {
-            console.log("success", data);
-            return `Login Successful`;
-          },
-          error: "Error",
-        });
+        await handleLogin(values);
       } catch (error) {
         console.log("Failed to signup", error);
         toast.error("Failed to signup");
@@ -53,8 +46,8 @@ const Login = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="flex flex-col gap-4">
           <Logo className="w-32 h-16 mx-auto aspect-square" />
-          <h1 className="text-center text-2xl font-semibold mb-8">
-            Welcome back, Login to your account
+          <h1 className="text-center text-xl font-semibold mb-8">
+            👋 Welcome back, Login to your account
           </h1>
           <Label htmlFor="email">Email</Label>
           <Input

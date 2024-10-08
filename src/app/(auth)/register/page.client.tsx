@@ -36,20 +36,13 @@ const Register = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     startTransition(async () => {
       try {
-        const promise = axios.post("/api/user/register", values);
-
-        toast.promise(promise, {
-          loading: "Loading...",
-          success: (data) => {
-            console.log("success", data);
-            return `${values.name} has been added`;
-          },
-          error: "Error",
-        });
-        router.push("/login");
+        const res = await axios.post("/api/user/register", values);
+        if (res.data._id) {
+          toast.success("User has been added successfully");
+          router.push("/login");
+        }
       } catch (error) {
         console.log("Failed to signup", error);
         toast.error("Failed to signup");

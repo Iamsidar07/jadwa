@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const useLogin = () => {
   const queryClient = useQueryClient();
@@ -24,10 +25,12 @@ const useLogin = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      toast.success("Login Successfully...");
       router.push("/?loggedIn=true"); // Redirect after login
     },
     onError: (error) => {
       console.log(error);
+      toast.error("Something went wrong");
     },
   });
 

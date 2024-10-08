@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TailwindEditor from "@/components/editor/TailwindEditor";
 import { Loader } from "lucide-react";
+import useCurrentUser from "@/hooks/useCurrentUser";
 
 const MAX_FILE_SIZE = 2000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -45,6 +46,7 @@ const formatDate = (dateString: string) => {
 };
 
 const EditBlog = ({ blogId }: { blogId: string }) => {
+  const { user } = useCurrentUser();
   const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm();
 
@@ -53,9 +55,11 @@ const EditBlog = ({ blogId }: { blogId: string }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["blog", blogId],
     queryFn: async () => {
-      console.log("querying blog");
       const res = await axios.get(`/api/blog/${blogId}`);
       return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs", user] });
     },
   });
 
@@ -82,12 +86,6 @@ const EditBlog = ({ blogId }: { blogId: string }) => {
   }, [data, reset]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(
-      "values image",
-      values,
-      values?.file?.[0],
-      values?.file?.[0] || null
-    );
     startTransition(async () => {
       try {
         const formData = new FormData();
@@ -99,24 +97,17 @@ const EditBlog = ({ blogId }: { blogId: string }) => {
         if (typeof values.file === "string") {
           formData.append("image", data.image);
         }
-        console.log(formData);
-        const promise = axios.patch(`/api/blog/${blogId}`, formData);
-        await toast.promise(promise, {
-          loading: "Publishing your blog...",
-          success: (data) => {
-            console.log("success", data);
-            return `Published your blog`;
-          },
-          error: "Error",
-        });
-        queryClient.invalidateQueries({ queryKey: ["blogs", blogId] });
+        const res = await axios.patch(`/api/blog/${blogId}`, formData);
+        if (res.data._id) {
+          queryClient.invalidateQueries({ queryKey: ["blogs"] });
+          toast.success("Blog has been published successfully");
+        }
       } catch (error) {
         console.log("something went wrong", error);
         toast.error("Oops! Something went wrong");
       }
     });
   };
-  console.log(data?.body);
 
   return (
     <div className="w-full max-w-3xl mx-auto">

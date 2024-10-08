@@ -2,16 +2,10 @@
 import Link from "next/link";
 import BlogCard from "@/components/BlogCard";
 import { useBlogContext } from "@/contexts/BlogContext";
+import { Loader } from "lucide-react";
 
 export default function Home() {
-  const { blogs, queryString } = useBlogContext();
-  console.log(
-    "blogs",
-    blogs,
-    blogs?.filter((b) =>
-      b.title.toLowerCase().includes(queryString.trim().toLowerCase())
-    )
-  );
+  const { blogs, queryString, isLoading } = useBlogContext();
   return (
     <div className="px-4 md:px-8 py-6 bg-[#FAFAFB] flex flex-col gap-6 min-h-screen">
       {/* blogheader */}
@@ -30,15 +24,29 @@ export default function Home() {
         </div>
       </div>
       {/*blogs*/}
-      <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {blogs
-          ?.filter((b) =>
-            b.title.toLowerCase().includes(queryString.trim().toLowerCase())
-          )
-          ?.map((blog, i) => (
-            <BlogCard key={i} {...blog} />
-          ))}
-      </div>
+      {isLoading && blogs?.length === 0 ? (
+        <Loader className="w-5 h-5 animate-spin mx-auto mt-8" />
+      ) : (
+        <>
+          {blogs.length === 0 && (
+            <h2 className="text-center mt-8 text-xl">
+              Seems like you have no blogs{" "}
+              <Link href="/blog/new" className="text-[#6c5dd3]">
+                Let&apos;s create a new blog
+              </Link>
+            </h2>
+          )}
+          <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {blogs
+              ?.filter((b) =>
+                b.title.toLowerCase().includes(queryString.trim().toLowerCase())
+              )
+              ?.map((blog, i) => (
+                <BlogCard key={i} {...blog} />
+              ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

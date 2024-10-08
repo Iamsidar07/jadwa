@@ -47,6 +47,9 @@ export async function DELETE(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     await Blog.findByIdAndDelete(_id);
     return NextResponse.json({ success: true }, { status: 200 });
+
+
+
   } catch (error) {
     console.log("failed to delete blog", error);
     return NextResponse.json(
@@ -75,10 +78,8 @@ export async function PATCH(
       description: formData.get("description") || "",
     };
 
-    console.log(requestBody);
     let imageUrl = requestBody.image;
 
-    console.log("file", file, typeof file);
     if (file && typeof file === "object") {
       const arrayBuffer = await file.arrayBuffer();
       const buffer = new Uint8Array(arrayBuffer);

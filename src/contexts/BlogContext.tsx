@@ -41,7 +41,6 @@ const BlogContextProvider = ({ children }: { children: React.ReactNode }) => {
   } = useQuery({
     queryKey: ["blogs", user],
     queryFn: async () => {
-      console.log("querying blogs");
       const res = await axios.get("/api/blog");
       return res.data;
     },
